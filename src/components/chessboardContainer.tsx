@@ -6,6 +6,7 @@ import { Chessboard } from "react-chessboard";
 import { ToastContainer } from "react-toastify";
 import { Dispatch, SetStateAction } from "react";
 import "react-toastify/dist/ReactToastify.css";
+import { Players } from "../interfaces/players";
 
 interface Props {
   myProps: {
@@ -19,6 +20,7 @@ interface Props {
     setPlayerTurn: Dispatch<SetStateAction<Color>>;
     error: string | null;
     setError: Dispatch<SetStateAction<string | null>>;
+    names: Players;
   };
 }
 
@@ -29,6 +31,7 @@ const ChessboardContainer = ({ myProps }: Props) => {
     gameOver,
     playerTurn,
     error,
+    names,
     setGame,
     setGameOver,
     setWinner,
@@ -112,7 +115,7 @@ const ChessboardContainer = ({ myProps }: Props) => {
           {playerTurn === "b" && (
             <CurrentTurn
               className="current-turn-black"
-              playerTurn={playerTurn}
+              playerName={names.black}
             />
           )}
           <Chessboard
@@ -123,7 +126,7 @@ const ChessboardContainer = ({ myProps }: Props) => {
           {playerTurn === "w" && (
             <CurrentTurn
               className="current-turn-white"
-              playerTurn={playerTurn}
+              playerName={names.White}
             />
           )}
         </div>

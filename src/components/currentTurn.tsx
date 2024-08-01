@@ -1,16 +1,10 @@
-import { Color } from "chess.js";
-
 interface Props {
-  playerTurn: Color;
+  playerName: string;
   className: string;
 }
 
-const CurrentTurn = ({ playerTurn, className }: Props) => {
-  return (
-    <div className={className}>
-      Current Turn: {playerTurn === "w" ? "White" : "Black"}
-    </div>
-  );
+const CurrentTurn = ({ playerName, className }: Props) => {
+  return <div className={className}>{playerName} it`s your turn</div>;
 };
 
 export default CurrentTurn;

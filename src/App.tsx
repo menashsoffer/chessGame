@@ -1,61 +1,111 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
-import { Chess } from "chess.js";
+import { Chess, Color } from "chess.js";
+// import ErrorMessage from "./components/error";
+import CurrentTurn from "./components/currentTurn";
+import GameOver from "./components/gameOver";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const [game, setGame] = useState<Chess>(new Chess());
   const [winner, setWinner] = useState<string | null>(null);
   const [gameOver, setGameOver] = useState<boolean>(false);
+  const [playerTurn, setPlayerTurn] = useState<Color>("w");
+  const [error, setError] = useState<string | null>(null);
+
+  const notify = () =>
+    toast.warn(error, {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  useEffect(() => {
+    // Check for game over
+    if (game.isGameOver()) {
+      setGameOver(true);
+      const winner = game.isCheckmate()
+        ? game.turn() === "w"
+          ? "Black"
+          : "White"
+        : "Draw";
+      setWinner(winner);
+    }
+  }, [game]);
 
   // Let's perform a function on the game state
   const safeGameMutate = (modify: (game: Chess) => void): void => {
     setGame((g) => {
-      const update = new Chess();
-      update.load(g.fen());
+      const update = new Chess(g.fen());
       modify(update);
       return update;
     });
   };
 
-  // Movement of computer
-  const makeRandomMove = (): void => {
-    const possibleMove = game.moves();
-
-    // exit if the game is over
-    if (game.isGameOver() || game.isDraw() || possibleMove.length === 0) {
-      setGameOver(true);
-      const winner = game.turn() === "w" ? "Black" : "White";
-      setWinner(winner);
-      return;
-    }
-
-    // select random move
-    const randomIndex = Math.floor(Math.random() * possibleMove.length);
-    // play random move
-    safeGameMutate((game) => {
-      game.move(possibleMove[randomIndex]);
-    });
-  };
-
   // Perform an action when a piece is dropped by a user
   const onDrop = (source: string, target: string): boolean => {
-    if (gameOver) return false;
+    if (gameOver || game.turn() !== playerTurn) return false;
 
     let move = null;
-    safeGameMutate((game) => {
-      move = game.move({
-        from: source,
-        to: target,
-        promotion: "q",
+    try {
+      const legalMoves = game.moves({
+        verbose: true,
       });
-    });
+      const isValidMove = legalMoves.some(
+        (m) => m.from === source && m.to === target
+      );
+
+      if (!isValidMove) {
+        setError("Invalid move! Please try again.");
+        notify();
+        return false;
+      }
+
+      safeGameMutate((game) => {
+        move = game.move({
+          from: source,
+          to: target,
+          promotion: "q",
+        });
+      });
+    } catch (error) {
+      setError("Invalid move! Please try again.");
+      notify();
+      return false;
+    }
+
     // illegal move
-    if (move === null) return false;
-    // valid move
-    setTimeout(() => {
-      makeRandomMove();
-    }, 200);
+    if (move === null) {
+      setError("Illegal move! Please try again.");
+      notify();
+      return false;
+    }
+
+    // Clear error message
+    setError(null);
+
+    //Check for game over
+    if (game.isGameOver()) {
+      console.log(gameOver);
+      setGameOver(true);
+      const winner = game.isCheckmate()
+        ? game.turn() === "w"
+          ? "Black"
+          : "White"
+        : "Draw";
+      setWinner(winner);
+      return true;
+    }
+
+    // Valid move
+    setPlayerTurn(playerTurn === "w" ? "b" : "w");
 
     return true;
   };
@@ -65,6 +115,8 @@ const App = () => {
     setGame(new Chess());
     setGameOver(false);
     setWinner(null);
+    setPlayerTurn("w");
+    setError(null);
   };
 
   // Listen for Enter key press to restart the game
@@ -80,9 +132,6 @@ const App = () => {
     };
   }, []);
 
-  console.log("Game FEN:", game.fen());
-  console.log("Possible moves:", game.moves());
-
   return (
     <div className="app">
       <div className="header">
@@ -91,14 +140,19 @@ const App = () => {
         </div>
       </div>
       <div className="chessboard-container">
-        <Chessboard position={game.fen()} onPieceDrop={onDrop} />
-        {gameOver && (
-          <div className="game-over">
-            <p>Game Over</p>
-            <p>Winner: {winner}</p>
-            <p>Press Enter to restart</p>
+        {gameOver && <GameOver winner={winner} />}
+        {!gameOver && (
+          <div>
+            <Chessboard
+              position={game.fen()}
+              onPieceDrop={onDrop}
+              animationDuration={300}
+            />
+            <CurrentTurn playerTurn={playerTurn} />
           </div>
         )}
+        {error && <ToastContainer />}
+        {/* {error && <ErrorMessage err={error} />} */}
       </div>
     </div>
   );

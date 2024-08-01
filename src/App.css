@@ -19,21 +19,109 @@
 
 .chessboard-container {
   position: relative;
-  width: 600px; /* or any other size you prefer */
-  height: 600px; /* make it square */
+  width: 500px; /* or any other size you prefer */
+  height: 500px; /* make it square */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .game-over {
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 300px;
+  height: 300px;
   transform: translate(-50%, -50%);
   background-color: rgba(0, 0, 0, 0.7);
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 50%;
   text-align: center;
+  animation: fadeIn 1s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .game-over p {
   margin: 5px 0;
+  animation: slideIn 1s ease-in-out;
+}
+
+.winner-text {
+  font-size: 2rem;
+  color: gold;
+  animation: scaleUp 1s ease-in-out;
+}
+
+.winner-text-h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: gold;
+  animation: scaleUp 1s ease-in-out;
+}
+
+.current-turn {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  background-color: #f0f0f0;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.current-turn.white {
+  color: #fff;
+  background-color: #4caf50; /* Green for white's turn */
+  border-color: #45a049;
+}
+
+.current-turn.black {
+  color: #fff;
+  background-color: #f44336; /* Red for black's turn */
+  border-color: #e53935;
+}
+
+.error-message {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #d32f2f; /* Red color for error messages */
+  text-align: center;
+  background-color: #ffe6e6; /* Light red background for error messages */
+  border: 1px solid #f5c6c6;
+  border-radius: 4px;
+  padding: 10px;
 }

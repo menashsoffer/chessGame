@@ -2,11 +2,12 @@ import { Color } from "chess.js";
 
 interface Props {
   playerTurn: Color;
+  className: string;
 }
 
-const CurrentTurn = ({ playerTurn }: Props) => {
+const CurrentTurn = ({ playerTurn, className }: Props) => {
   return (
-    <div className={`current-turn ${playerTurn}`}>
+    <div className={className}>
       Current Turn: {playerTurn === "w" ? "White" : "Black"}
     </div>
   );

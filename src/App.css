@@ -91,7 +91,6 @@
 }
 
 .current-turn {
-  margin-top: 20px;
   font-size: 18px;
   font-weight: bold;
   color: #333;
@@ -103,16 +102,28 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.current-turn.white {
-  color: #fff;
-  background-color: #4caf50; /* Green for white's turn */
-  border-color: #45a049;
+.current-turn-white {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+  color: #000000;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.current-turn.black {
-  color: #fff;
-  background-color: #f44336; /* Red for black's turn */
-  border-color: #e53935;
+.current-turn-black {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffffff;
+  background-color: #000000;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .error-message {

@@ -2,7 +2,6 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess, Color } from "chess.js";
-// import ErrorMessage from "./components/error";
 import CurrentTurn from "./components/currentTurn";
 import GameOver from "./components/gameOver";
 import { toast, ToastContainer } from "react-toastify";
@@ -152,7 +151,6 @@ const App = () => {
           </div>
         )}
         {error && <ToastContainer />}
-        {/* {error && <ErrorMessage err={error} />} */}
       </div>
     </div>
   );
